@@ -4,7 +4,9 @@ import pandas as pd
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow
 import datetime
-
+import matplotlib.pyplot as plt
+import pyqtgraph as pg
+import numpy as np
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -31,7 +33,7 @@ class MainWindow(QMainWindow):
         # тут должен быть индекс на цветном фоне
         self.label_value_index = QtWidgets.QLabel(self.today)
         self.label_value_index.setGeometry(QtCore.QRect(0, 50, 309, 50))
-        self.label_value_index.setObjectName("label_date")
+        self.label_value_index.setObjectName("label_value_index")
         self.label_value_index.setFont(QFont('Arial', 50))
         #про первую из надписей
         self.label_index = QtWidgets.QLabel(self.today)
@@ -102,14 +104,18 @@ class MainWindow(QMainWindow):
         self.pushButton_today.setObjectName("pushButton_today")
         self.horizontalLayout.addWidget(self.pushButton_today)
         # опять тот блок что на первой странице
+        self.label_value_index2 = QtWidgets.QLabel(self.history)
+        self.label_value_index2.setGeometry(QtCore.QRect(0, 70, 309, 50))
+        self.label_value_index2.setObjectName("label_value_index2")
+        self.label_value_index2.setFont(QFont('Arial', 50))
         self.label_index_2 = QtWidgets.QLabel(self.history)
-        self.label_index_2.setGeometry(QtCore.QRect(0, 80, 309, 50))
+        self.label_index_2.setGeometry(QtCore.QRect(0, 170, 309, 50))
         self.label_index_2.setObjectName("label_index_2")
         self.label_recomendation_2 = QtWidgets.QLabel(self.history)
-        self.label_recomendation_2.setGeometry(QtCore.QRect(0, 130, 309, 50))
+        self.label_recomendation_2.setGeometry(QtCore.QRect(0, 220, 309, 50))
         self.label_recomendation_2.setObjectName("label_recomendation_2")
         self.verticalLayoutWidget_2 = QtWidgets.QWidget(self.history)
-        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(10, 180, 221, 221))
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(10, 320, 221, 221))
         self.verticalLayoutWidget_2.setObjectName("verticalLayoutWidget_2")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_2)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -124,27 +130,49 @@ class MainWindow(QMainWindow):
         self.radio_no2_2 = QtWidgets.QRadioButton(self.verticalLayoutWidget_2)
         self.radio_no2_2.setObjectName("radio_no2_2")
         self.verticalLayout_2.addWidget(self.radio_no2_2)
-        self.label_concetration_2 = QtWidgets.QLabel(self.history)
-        self.label_concetration_2.setGeometry(QtCore.QRect(0, 410, 551, 81))
-        self.label_concetration_2.setObjectName("label_concetration_2")
         # задается промежуток
         self.dateEdit = QtWidgets.QDateEdit(self.history)
-        self.dateEdit.setGeometry(QtCore.QRect(250, 480, 181, 51))
+        self.dateEdit.setGeometry(QtCore.QRect(250, 530, 181, 51))
         self.dateEdit.setObjectName("dateEdit")
+        self.dateEdit.setCalendarPopup(True)
         self.first_day = QtWidgets.QLabel(self.history)
-        self.first_day.setGeometry(QtCore.QRect(0, 480, 251, 50))
+        self.first_day.setGeometry(QtCore.QRect(0, 530, 251, 50))
         self.first_day.setObjectName("first_day")
         self.finish_day = QtWidgets.QLabel(self.history)
-        self.finish_day.setGeometry(QtCore.QRect(0, 540, 251, 50))
+        self.finish_day.setGeometry(QtCore.QRect(0, 610, 251, 50))
         self.finish_day.setObjectName("finish_day")
         self.dateEdit_2 = QtWidgets.QDateEdit(self.history)
-        self.dateEdit_2.setGeometry(QtCore.QRect(250, 540, 181, 51))
+        self.dateEdit_2.setGeometry(QtCore.QRect(250, 610, 181, 51))
         self.dateEdit_2.setObjectName("dateEdit_2")
+        self.dateEdit_2.setCalendarPopup(True)
+        """self.layout = QtWidgets.QVBoxLayout(self.history)
+        self.plot_container = QtWidgets.QWidget(self.history)
+        self.plot_container.setMinimumSize(QtCore.QSize(0, 200))
+        self.layout.addWidget(self.plot_container)
+
+        # График
+        self.plot_widget = pg.PlotWidget(self.plot_container)
+        self.plot_widget.setFixedWidth(20)  # Установка ширины графика
+        self.plot_widget.setFixedHeight(20)
+        self.plot_widget.setGeometry(QtCore.QRect(250, 610, 181, 51))
+        self.layout_plot = QtWidgets.QVBoxLayout(self.plot_container)
+        self.layout_plot.addWidget(self.plot_widget)
+
+        # Тестовые данные для графика
+        x = np.linspace(0, 10, 100)
+        y = np.sin(x)
+
+        # Построение графика
+        self.plot_widget.plot(x, y, pen='b')"""
+
         # скрол
         self.verticalScrollBar = QtWidgets.QScrollBar(self.history)
         self.verticalScrollBar.setGeometry(QtCore.QRect(1030, 0, 16, 721))
         self.verticalScrollBar.setOrientation(QtCore.Qt.Vertical)
         self.verticalScrollBar.setObjectName("verticalScrollBar")
+        self.graphicsView = QtWidgets.QGraphicsView(self.history)
+        self.graphicsView.setGeometry(QtCore.QRect(10, 690, 256, 192))
+        self.graphicsView.setObjectName("graphicsView")
         self.tabWidget.addTab(self.history, "")# опять добавление
         # следующая вкладка, но пустая пока
         self.tab = QtWidgets.QWidget()
@@ -170,14 +198,47 @@ class MainWindow(QMainWindow):
         self.menu.addAction(self.exit)
         self.menubar.addAction(self.menu.menuAction())
 
-        self.radio_co.clicked.connect(self.show_selected_label)
-        self.radio_o.clicked.connect(self.show_selected_label)
-        self.radio_no2.clicked.connect(self.show_selected_label)
+
+        date_array = []
+        main_date = '2005-04-04'
+        formal_main_date = datetime.datetime.strptime(main_date, '%Y-%m-%d')
+        for i in range(7):
+            date_array.append((formal_main_date + datetime.timedelta(days=-6 + i)).date())
+        hour = 18
+        two_week_day = (formal_main_date + datetime.timedelta(days=-14)).date()
+        self.dateEdit.setMinimumDate(QtCore.QDate(2004, 3, 10))
+        self.dateEdit.setMaximumDate(QtCore.QDate(2005, 4, 3))
+        self.dateEdit_2.setMinimumDate(QtCore.QDate(2004, 3, 10))
+        self.dateEdit_2.setMaximumDate(QtCore.QDate(2005, 4, 3))
+        initial_date1 = QtCore.QDate(two_week_day.year, two_week_day.month, two_week_day.day)
+        self.dateEdit.setDate(initial_date1)
+        initial_date2 = QtCore.QDate(date_array[5].year, date_array[5].month, date_array[5].day)
+        self.dateEdit_2.setDate(initial_date2)
+        selected_date1 = self.dateEdit.date()
+        selected_date2 = self.dateEdit_2.date()
+        self.radio_co.clicked.connect(lambda: self.show_label_with_radio(main_date, hour))
+        self.radio_o.clicked.connect(lambda: self.show_label_with_radio(main_date, hour))
+        self.radio_no2.clicked.connect(lambda: self.show_label_with_radio(main_date, hour))
+        self.radio_co_2.clicked.connect(lambda: self.show_label_with_radio(selected_date1, selected_date2))
+        self.radio_o_2.clicked.connect(lambda: self.show_label_with_radio(selected_date1, selected_date2))
+        self.radio_no2_2.clicked.connect(lambda: self.show_label_with_radio(selected_date1, selected_date2))
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
         self.loaded_data = None
         self.load_data()
-        self.today_tab()
+        self.today_tab(main_date, hour)
+        self.history_tab(date_array, hour)
+        self.pushButton_today.setCheckable(True)
+        self.pushButton_yesterday6.clicked.connect(lambda: self.show_page_with_push(str(date_array[0]), 24, self.pushButton_today))
+        self.pushButton_yesterday5.clicked.connect(lambda: self.show_page_with_push(str(date_array[1]), 24, self.pushButton_today))
+        self.pushButton_yesterday4.clicked.connect(lambda: self.show_page_with_push(str(date_array[2]), 24, self.pushButton_today))
+        self.pushButton_yesterday3.clicked.connect(lambda: self.show_page_with_push(str(date_array[3]), 24, self.pushButton_today))
+        self.pushButton_yesterday2.clicked.connect(lambda: self.show_page_with_push(str(date_array[4]), 24, self.pushButton_today))
+        self.pushButton_yesterday1.clicked.connect(lambda: self.show_page_with_push(str(date_array[5]), 24, self.pushButton_today))
+        self.pushButton_today.clicked.connect(lambda: self.show_page_with_push(str(date_array[6]), hour, self.pushButton_today, False))
+        self.pushButton_today.click()
+
+
 
 
 
@@ -187,26 +248,18 @@ class MainWindow(QMainWindow):
         self.radio_co.setText( "Угарный газ")
         self.radio_o.setText(_translate("MainWindow", "Озон"))
         self.radio_no2.setText(_translate("MainWindow", "Диоксид азота"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.today), _translate("MainWindow", "Состояние на сегодня"))
-        self.pushButton_yesterday6.setText(_translate("MainWindow", "PushButton"))
-        self.pushButton_yesterday5.setText(_translate("MainWindow", "PushButton"))
-        self.pushButton_yesterday4.setText(_translate("MainWindow", "PushButton"))
-        self.pushButton_yesterday3.setText(_translate("MainWindow", "PushButton"))
-        self.pushButton_yesterday2.setText(_translate("MainWindow", "PushButton"))
-        self.pushButton_yesterday1.setText(_translate("MainWindow", "PushButton"))
-        self.pushButton_today.setText(_translate("MainWindow", "PushButton"))
         self.label_index_2.setText(_translate("MainWindow", "Индекс качества воздуха"))
-        self.label_recomendation_2.setText(_translate("MainWindow", "Рекомендации"))
         self.radio_co_2.setText(_translate("MainWindow", "Угарный газ"))
         self.radio_o_2.setText(_translate("MainWindow", "Озон"))
         self.radio_no2_2.setText(_translate("MainWindow", "Диоксид азота"))
-        self.label_concetration_2.setText(_translate("MainWindow", "Содержание"))
         self.first_day.setText(_translate("MainWindow", "Начало промежутка"))
         self.finish_day.setText(_translate("MainWindow", "Конец промежутка"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.today), _translate("MainWindow", "Состояние на сегодня"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.history), _translate("MainWindow", "Историческая сводка"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Расчёт"))
         self.menu.setTitle(_translate("MainWindow", "Меню"))
         self.exit.setText(_translate("MainWindow", "Выход"))
+
 
     def load_data(self):
         # Здесь можно загрузить данные из файла или другого источника
@@ -219,19 +272,26 @@ class MainWindow(QMainWindow):
             CO = []
             O3 = []
             NO2 = []
-            for i in range(len(data_array)):
-                if data_array[i][0] == date and data_array[i][4] <= hour:
-                    last_index = i
-                    CO.append(data_array[i][5]/100)
-                    O3.append(data_array[i][9]/10)
-                    NO2.append(data_array[i][8]/10)
-                elif len(CO)>0:
-                    break
-            if len(CO) < 8:
-                for i in range(8-len(CO)):
-                    CO.append(data_array[last_index-len(CO)][5] / 100)
-                    O3.append(data_array[last_index-len(O3)][9] / 10)
-                    NO2.append(data_array[last_index-len(NO2)][8] / 10)
+            last_index = -1
+            while(len(CO) < 8):
+                for i in range(len(data_array)):
+                    if data_array[i][0] == date and data_array[i][4] <= hour:
+                        last_index = i
+                        CO.append(data_array[i][5]/100)
+                        O3.append(data_array[i][9]/10)
+                        NO2.append(data_array[i][8]/10)
+                    elif len(CO)>0:
+                        break
+                if len(CO) < 8 and last_index!=-1:
+                    for i in range(8-len(CO)):
+                        CO.append(data_array[last_index-len(CO)][5] / 100)
+                        O3.append(data_array[last_index-len(O3)][9] / 10)
+                        NO2.append(data_array[last_index-len(NO2)][8] / 10)
+                elif last_index == -1:
+                    date_obj = datetime.datetime.strptime(date, '%Y-%m-%d')
+                    previous_date = (date_obj + datetime.timedelta(days=-1)).date()
+                    date = str(previous_date)
+                    hour == 23
             co = sum(CO)/len(CO)
             o3 = sum(O3) / len(O3)
             no2 = sum(NO2) / len(NO2)
@@ -274,9 +334,7 @@ class MainWindow(QMainWindow):
 
 
 
-    def today_tab(self):
-        date = '2005-04-04'
-        hour = 14
+    def today_tab(self, date, hour):
         info_today = self.count_aqi(date, hour)
         date_obj = datetime.datetime.strptime(date, '%Y-%m-%d')
         date_obj = date_obj.strftime('%d.%m.%Y')
@@ -311,9 +369,7 @@ class MainWindow(QMainWindow):
         self.label_concetration.setText(f"Концетрация угарного газа в воздухе составляет {round(info_today[1], 2)} ppm")
         self.label_concetration.adjustSize()
 
-    def show_selected_label(self):
-        date = '2005-04-04'
-        hour = 14
+    def show_label_with_radio(self, date, hour):
         info_today = self.count_aqi(date, hour)
         sender = self.sender()
         if sender == self.radio_co:
@@ -324,8 +380,104 @@ class MainWindow(QMainWindow):
             self.label_concetration.setText(f"Концетрация двуокиси азота в воздухе составляет {round(info_today[3], 2)} ppb")
         self.label_concetration.adjustSize()
 
+    def show_label_with_radio2(self, first_date, finish_date):
+        info = []
+        x = []
+        y = []
+        if (first_date > finish_date):
+            print("Error")
+        delta = finish_date-first_date
+        for i in range(delta.days):
+            current_date = (first_date + datetime.timedelta(days=i)).date()
+            x.append(current_date)
+            info[i] = self.count_aqi(str(current_date), 24)
+        sender = self.sender()
+        if sender == self.radio_co_2:
+            for i in range(len(info)):
+                y.append(info[i][1])
+            plt.ylabel('Концентрация CO, ppm')
+        elif sender == self.radio_o_2:
+            pass
+        elif sender == self.radio_no2_2:
+            pass
+        plt.plot(x, y, marker='o')  # Построение графика с маркерами точек
+        plt.xlabel('Дата')  # Подпись оси x
+        plt.ylabel('Значение')  # Подпись оси y
+        plt.xticks(rotation=45)  # Поворот подписей дат для лучшей видимости
+        plt.grid(True)  # Включение сетки на графике
+        plt.tight_layout()  # Автоматическая расстановка элементов для лучшего отображения
+        plt.show()
+
+    def show_page_with_push(self, date, hour, button, flag = True):
+        if (flag):
+            button.setCheckable(False)
+            button.update()
+        info_today = self.count_aqi(str(date), hour)
+        self.label_value_index2.setText(f"{int(info_today[0])}")
+        self.label_value_index2.adjustSize()
+        if info_today[0] <= 50:
+            self.label_value_index2.setStyleSheet("background-color: lightgreen")
+            self.label_recomendation_2.setText(
+                "Никаких последствий для здоровья. Каждый может продолжать свои занятия\nна улице в обычном режиме.")
+        elif info_today[0] >= 51 and info_today[0] <= 100:
+            self.label_value_index2.setStyleSheet("background-color: #fdff72")
+            self.label_recomendation_2.setText(
+                "Некоторые загрязняющие вещества могут незначительно влиять на немногих\nгиперчувствительных людей. Таким людям следует проводить на улице\nменьше времени.")
+        elif info_today[0] >= 101 and info_today[0] <= 150:
+            self.label_value_index2.setStyleSheet("background-color: orange")
+            self.label_recomendation_2.setText(
+                "Здоровые люди могут испытывать легкое раздражение, а чувствительные люди будут\nподвержены воздействию в большей степени. Детям, пожилым людям и лицам с\nзаболеваниями органов дыхания или сердца следует меньше времени\nпроводить на улице.")
+        elif info_today[0] >= 151 and info_today[0] <= 200:
+            self.label_value_index2.setStyleSheet("background-color: red")
+            self.label_recomendation_2.setText(
+                "Чувствительные люди могут быть подвержены серьезным заболеваниям. У здоровых\nлюдей могут быть затронуты сердце и дыхательная система. Детям, пожилым\nлюдям и лицам с заболеваниями органов дыхания или сердца следует избегать\nдлительного нахождения на улице.")
+        elif info_today[0] >= 201 and info_today[0] <= 300:
+            self.label_value_index2.setStyleSheet("background-color: #4B0082")
+            self.label_recomendation_2.setText(
+                "Люди с респираторными или сердечными заболеваниями значительно пострадают\nи будут испытывать снижение выносливости при физических нагрузках. Детям, пожилым\nлюдям и лицам с заболеваниями сердца или легких следует оставаться в помещении.")
+        elif info_today[0] >= 301:
+            self.label_value_index2.setStyleSheet("background-color: #800000")
+            self.label_recomendation_2.setText(
+                "У здоровых людей снижается выносливость при физических нагрузках, а также\nмогут проявляться заметно выраженные симптомы болезней. Детям, пожилым и\nбольным людям следует оставаться в помещении и избегать физических нагрузок.")
+        self.label_recomendation_2.adjustSize()
+        self.label_index_2.setText(f"Индекс качества воздуха")
+
+
+
+    def history_tab(self, date_array, hour):
+        date_array_processed = []
+        for i in range(len(date_array)):
+            date_array_processed.append(date_array[i].strftime('%d.%m.%Y'))
+        self.pushButton_yesterday6.setText(str(date_array_processed[0]))
+        self.pushButton_yesterday5.setText(str(date_array_processed[1]))
+        self.pushButton_yesterday4.setText(str(date_array_processed[2]))
+        self.pushButton_yesterday3.setText(str(date_array_processed[3]))
+        self.pushButton_yesterday2.setText(str(date_array_processed[4]))
+        self.pushButton_yesterday1.setText(str(date_array_processed[5]))
+        self.pushButton_today.setText(str(date_array_processed[6]))
+
+
+
+Stylesheet = '''
+QWidget {
+    font-size: 25px;
+}
+QPushButton:checked {
+    border: 2px solid #09009B;
+}
+QPushButton:focus {
+    border: 2px solid #09009B;
+}
+#label_value_index, #label_value_index2 {
+    font-size: 70px;
+}
+'''
+
+
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyleSheet(Stylesheet)
     window = MainWindow()
     window.show()
     app.exec_()
